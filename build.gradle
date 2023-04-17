@@ -1,0 +1,114 @@
+import org.gradle.internal.os.OperatingSystem
+
+plugins {
+    id 'java'
+//    id 'org.jetbrains.kotlin.jvm' version '1.3.11'
+}
+
+group 'com.kcraft'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+
+
+
+project.ext.lwjglVersion = "3.2.0"
+project.ext.jomlVersion = "1.9.11"
+
+project.ext.lwjglNatives = "natives-windows"
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+//    shade "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // LWJGL dependencies
+    shade "org.lwjgl:lwjgl:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-openal:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-nanovg:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-stb:${lwjglVersion}"
+    shade "org.lwjgl:lwjgl-assimp:${lwjglVersion}"
+    
+    shade "org.lwjgl:lwjgl-egl:$lwjglVersion"
+    shade "org.lwjgl:lwjgl-opengles:$lwjglVersion"
+
+    // LWJGL natives Windows
+    shade "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows"
+    shade "org.lwjgl:lwjgl-opengles:${lwjglVersion}:natives-windows"
+    // LWJGL Natives Linux
+    shade "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux"
+    shade "org.lwjgl:lwjgl-opengles:${lwjglVersion}:natives-linux"
+    // LWJGL Natives OSX
+    shade "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos"
+    shade "org.lwjgl:lwjgl-opengles:${lwjglVersion}:natives-macos"
+
+
+    shade "org.joml:joml:${jomlVersion}"
+
+
+    // https://mvnrepository.com/artifact/org.l33tlabs.twl/pngdecoder
+    shade group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
+
+    shade 'com.google.code.gson:gson:2.8.5'
+
+    String jimgui_version = 'v0.7'
+    compile "org.ice1000.jimgui:core:$jimgui_version" // basic functionality
+    compile "org.ice1000.jimgui:extension:$jimgui_version" // basic functionality
+
+
+
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+
+}
+
+//compileKotlin {
+//    kotlinOptions.jvmTarget = "1.8"
+//}
+//compileTestKotlin {
+//    kotlinOptions.jvmTarget = "1.8"
+//}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+    manifest {
+        attributes 'Main-Class': 'com.kcraft.game.KCraft'
+    }
+}
